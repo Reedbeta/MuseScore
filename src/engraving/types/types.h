@@ -1189,6 +1189,16 @@ enum class LayoutFlag : unsigned char {
 };
 
 typedef muse::Flags<LayoutFlag> LayoutFlags;
+
+//---------------------------------------------------------
+//  ScoreInversionMode
+//---------------------------------------------------------
+
+enum class ScoreInversionMode : unsigned char {
+    Disabled,
+    FollowAppTheme,
+    Always
+};
 } // mu::engraving
 
 template<>
