@@ -49,8 +49,8 @@
 #include "capo.h"
 #include "chord.h"
 #include "clef.h"
-#include "excerpt.h"
 #include "dynamic.h"
+#include "excerpt.h"
 #include "factory.h"
 #include "fermata.h"
 #include "glissando.h"
@@ -80,12 +80,12 @@
 #include "rest.h"
 #include "scoreorder.h"
 #include "segment.h"
-#include "stafftextbase.h"
 #include "select.h"
 #include "shadownote.h"
 #include "sig.h"
 #include "slur.h"
 #include "staff.h"
+#include "stafftextbase.h"
 #include "stafftype.h"
 #include "synthesizerstate.h"
 #include "system.h"
@@ -853,12 +853,12 @@ void Score::spell()
 {
     for (staff_idx_t i = 0; i < nstaves(); ++i) {
         std::vector<Note*> notes;
-        for (Segment* s = firstSegment(SegmentType::All); s; s = s->next1()) {
+        for (Segment* s = firstSegment(SegmentType::ChordRest); s; s = s->next1(SegmentType::ChordRest)) {
             track_idx_t strack = i * VOICES;
             track_idx_t etrack = strack + VOICES;
             for (track_idx_t track = strack; track < etrack; ++track) {
                 EngravingItem* e = s->element(track);
-                if (e && e->type() == ElementType::CHORD) {
+                if (e && e->isChord()) {
                     Chord* c = toChord(e);
                     std::copy_if(c->notes().begin(), c->notes().end(),
                                  std::back_inserter(notes), [this](EngravingItem* ce) { return selection().isNone() || ce->selected(); });
@@ -871,6 +871,33 @@ void Score::spell()
             }
         }
         spellNotelist(notes);
+    }
+}
+
+void Score::spellWithSharpsOrFlats(Prefer prefer)
+{
+    std::vector<Note*> notes = selection().noteList();
+    for (Note* n : notes) {
+        Interval v = n->part()->instrument(n->chord()->tick())->transpose();
+        int tpc1, tpc2;
+        if (n->staff()->concertPitch() || v.isZero()) {
+            // Note: using Key::C always and ignoring actual key signature. Otherwise, "respell with flats" would still use sharps
+            // sometimes if they're in the key, and vice versa, which seems contrary to the intent of the command.
+            tpc1 = pitch2tpc(n->pitch(), Key::C, prefer);
+            v.flip();
+            tpc2 = transposeTpc(tpc1, v, true);
+        } else {
+            // Spell the transposed pitch first, then convert to concert pitch
+            int writtenPitch = n->pitch() - v.chromatic;
+            tpc2 = pitch2tpc(writtenPitch, Key::C, prefer);
+            tpc1 = transposeTpc(tpc2, v, true);
+        }
+        n->undoChangeProperty(Pid::TPC1, tpc1);
+        n->undoChangeProperty(Pid::TPC2, tpc2);
+        for (Note* tied : n->tiedNotes()) {
+            tied->undoChangeProperty(Pid::TPC1, tpc1);
+            tied->undoChangeProperty(Pid::TPC2, tpc2);
+        }
     }
 }
 
