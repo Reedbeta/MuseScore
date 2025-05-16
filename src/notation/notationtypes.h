@@ -406,6 +406,7 @@ struct FilterNotesOptions : FilterElementsOptions
     mu::engraving::NoteHeadGroup notehead = mu::engraving::NoteHeadGroup::HEAD_INVALID;
     mu::engraving::TDuration durationType = mu::engraving::TDuration();
     mu::engraving::NoteType noteType = mu::engraving::NoteType::INVALID;
+    int chordIndex = -1;
 };
 
 struct StaffConfig

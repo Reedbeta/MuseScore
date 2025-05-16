@@ -699,6 +699,18 @@ void Note::setParent(Chord* ch)
     EngravingItem::setParent(ch);
 }
 
+int Note::chordIndex() const
+{
+    if (const Chord* c = chord()) {
+        for (int i = 0; i < c->notes().size(); ++i) {
+            if (c->notes()[i] == this) {
+                return i;
+            }
+        }
+    }
+    return 0;
+}
+
 //---------------------------------------------------------
 //   concertPitchIdx
 //---------------------------------------------------------

@@ -164,6 +164,7 @@ public:
 
     Chord* chord() const { return (Chord*)explicitParent(); }
     void setParent(Chord* ch);
+    int chordIndex() const;
 
     // Score Tree functions
     EngravingObject* scanParent() const override;
