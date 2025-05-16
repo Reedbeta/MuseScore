@@ -73,6 +73,7 @@ struct NotePattern : ElementPattern {
     NoteHeadGroup notehead = NoteHeadGroup::HEAD_INVALID;
     TDuration durationType = TDuration();
     NoteType type = NoteType::INVALID;
+    size_t chordIndex = muse::nidx;
 };
 
 //---------------------------------------------------------
