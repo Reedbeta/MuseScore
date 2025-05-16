@@ -72,6 +72,7 @@ struct NotePattern : ElementPattern {
     NoteHeadGroup notehead = NoteHeadGroup::HEAD_INVALID;
     TDuration durationType = TDuration();
     NoteType type = NoteType::INVALID;
+    int chordIndex = -1;
 };
 
 //---------------------------------------------------------
