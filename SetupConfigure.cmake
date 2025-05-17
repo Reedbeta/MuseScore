@@ -16,7 +16,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>. 
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 include(GetBuildType)
 include(GetPlatformInfo)
@@ -51,6 +51,7 @@ if(BUILD_MODE STREQUAL "DEV")
     set(MUSE_APP_TITLE_VERSION "${MUSE_APP_TITLE_VERSION} ${MUSE_APP_RELEASE_CHANNEL}")
     set(MUSE_APP_IS_PRERELEASE ON)
     set(MUSESCORE_ALLOW_UPDATE_ON_PRERELEASE OFF)
+    set(MUSE_MODULE_MUSESAMPLER OFF)
 endif()
 
 if(BUILD_MODE STREQUAL "TESTING")
