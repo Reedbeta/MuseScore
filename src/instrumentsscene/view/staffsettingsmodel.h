@@ -36,6 +36,7 @@ class StaffSettingsModel : public QObject, public muse::Injectable
     Q_PROPERTY(int staffType READ staffType WRITE setStaffType NOTIFY staffTypeChanged)
     Q_PROPERTY(bool isSmallStaff READ isSmallStaff WRITE setIsSmallStaff NOTIFY isSmallStaffChanged)
     Q_PROPERTY(bool cutawayEnabled READ cutawayEnabled WRITE setCutawayEnabled NOTIFY cutawayEnabledChanged)
+    Q_PROPERTY(bool explodeChordsInExcerpt READ explodeChordsInExcerpt WRITE setExplodeChordsInExcerpt NOTIFY explodeChordsInExcerptChanged)
 
     Q_PROPERTY(QVariantList voices READ voices NOTIFY voicesChanged)
     Q_PROPERTY(QVariantList allStaffTypes READ allStaffTypes NOTIFY allStaffTypesChanged)
@@ -50,6 +51,7 @@ public:
     int staffType() const;
     bool isSmallStaff() const;
     bool cutawayEnabled() const;
+    bool explodeChordsInExcerpt() const;
 
     QVariantList voices() const;
     QVariantList allStaffTypes() const;
@@ -65,6 +67,7 @@ public slots:
     void setStaffType(int type);
     void setIsSmallStaff(bool value);
     void setCutawayEnabled(bool value);
+    void setExplodeChordsInExcerpt(bool value);
 
 signals:
     void staffTypeChanged();
@@ -73,6 +76,7 @@ signals:
     void isSmallStaffChanged();
     void cutawayEnabledChanged();
     void allStaffTypesChanged();
+    void explodeChordsInExcerptChanged();
 
     void isMainScoreChanged(bool isMainScore);
 
@@ -85,6 +89,7 @@ private:
     muse::ID m_staffId;
     QList<bool> m_voicesVisibility;
     notation::StaffConfig m_config;
+    bool m_explodeChordsInExcerpt;
 };
 }
 
