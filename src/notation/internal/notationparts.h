@@ -52,6 +52,7 @@ public:
     void setScoreOrder(const ScoreOrder& order) override;
     void setPartVisible(const muse::ID& partId, bool visible) override;
     bool setVoiceVisible(const muse::ID& staffId, int voiceIndex, bool visible) override;
+    bool setExplodeChordsInExcerpt(const muse::ID& staffId, bool explode) override;
     void setStaffVisible(const muse::ID& staffId, bool visible) override;
     void setPartSharpFlat(const muse::ID& partId, const SharpFlat& sharpFlat) override;
     void setInstrumentName(const InstrumentKey& instrumentKey, const QString& name) override;

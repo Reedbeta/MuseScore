@@ -347,6 +347,26 @@ void Excerpt::setVoiceVisible(Staff* staff, voice_idx_t voiceIndex, bool visible
     excerptScore()->undo(new Link(newStaff, masterStaff));
 }
 
+void Excerpt::setExplodeChords(Staff* staff, bool explode)
+{
+    if (!staff) {
+        return;
+    }
+
+    Staff* masterStaff = masterScore()->staffById(staff->id());
+    if (!masterStaff) {
+        return;
+    }
+
+    bool wasExplode = staff->explodeChordsInExcerpt();
+    if (explode == wasExplode) {
+        return;
+    }
+
+    // TODO
+    staff->setExplodeChordsInExcerpt(explode);
+}
+
 void Excerpt::createExcerpt(Excerpt* excerpt)
 {
     MasterScore* masterScore = excerpt->masterScore();
