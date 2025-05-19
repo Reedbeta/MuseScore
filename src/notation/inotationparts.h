@@ -52,6 +52,7 @@ public:
     virtual void setScoreOrder(const ScoreOrder& order) = 0;
     virtual void setPartVisible(const muse::ID& partId, bool visible) = 0;
     virtual bool setVoiceVisible(const muse::ID& staffId, int voiceIndex, bool visible) = 0;
+    virtual bool setExplodeChordsInExcerpt(const muse::ID& staffId, bool explode) = 0;
     virtual void setStaffVisible(const muse::ID& staffId, bool visible) = 0;
     virtual void setPartSharpFlat(const muse::ID& partId, const SharpFlat& sharpFlat) = 0;
     virtual void setInstrumentName(const InstrumentKey& instrumentKey, const QString& name) = 0;

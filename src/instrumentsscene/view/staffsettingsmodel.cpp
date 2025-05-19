@@ -48,6 +48,9 @@ void StaffSettingsModel::load(const QString& staffId)
         m_voicesVisibility << voice;
     }
 
+    m_explodeChordsInExcerpt = staff->explodeChordsInExcerpt();
+
+    emit explodeChordsInExcerptChanged();
     emit cutawayEnabledChanged();
     emit isSmallStaffChanged();
     emit voicesChanged();
@@ -161,6 +164,23 @@ void StaffSettingsModel::setVoiceVisible(int voiceIndex, bool visible)
         m_voicesVisibility[voiceIndex] = visible;
         emit voiceVisibilityChanged(voiceIndex, visible);
     }
+}
+
+bool StaffSettingsModel::explodeChordsInExcerpt() const
+{
+    return m_explodeChordsInExcerpt;
+}
+
+void StaffSettingsModel::setExplodeChordsInExcerpt(bool value)
+{
+    if (m_explodeChordsInExcerpt == value || !notationParts()) {
+        return;
+    }
+
+    m_explodeChordsInExcerpt = value;
+    notationParts()->setExplodeChordsInExcerpt(m_staffId, value);
+
+    emit explodeChordsInExcerptChanged();
 }
 
 INotationPtr StaffSettingsModel::currentNotation() const

@@ -134,6 +134,20 @@ StyledPopupView {
             }
         }
 
+        CheckBox {
+            navigation.panel: root.navigationPanel
+            navigation.row: 6
+
+            visible: !settingsModel.isMainScore
+
+            text: qsTrc("layoutpanel", "Explode chords in part")
+            checked: settingsModel.explodeChordsInExcerpt
+
+            onClicked: {
+                settingsModel.explodeChordsInExcerpt = !checked
+            }
+        }
+
         SeparatorLine {}
 
         CheckBox {
