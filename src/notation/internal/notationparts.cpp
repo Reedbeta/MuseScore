@@ -512,6 +512,41 @@ bool NotationParts::setVoiceVisible(const ID& staffId, int voiceIndex, bool visi
     return true;
 }
 
+bool NotationParts::setExplodeChordsInExcerpt(const muse::ID& staffId, bool explode)
+{
+    TRACEFUNC;
+
+    if (!score()->excerpt()) {
+        return false;
+    }
+
+    Staff* staff = staffModifiable(staffId);
+    if (!staff) {
+        return false;
+    }
+
+    const TranslatableString actionName = explode
+                                          ? TranslatableString("undoableAction", "Explode chords in part")
+                                          : TranslatableString("undoableAction", "Unexplode chords in part");
+
+    startEdit(actionName);
+
+    score()->excerpt()->setExplodeChords(staff, explode);
+
+    //! HACK: Excerpt::setExplodeChords recreates the staff,
+    //! so later in listenUndoStackChanges() we will call notifyAboutStaffRemoved() and notifyAboutStaffAdded(),
+    //! which will result in the wrong UI state in the Layout panel.
+    //! We should not recreate the staff here, only update it
+    m_ignoreUndoStackChanges = true;
+    apply();
+    m_ignoreUndoStackChanges = false;
+
+    Staff* newStaff = staffModifiable(staffId);
+    notifyAboutStaffChanged(newStaff);
+
+    return true;
+}
+
 void NotationParts::setStaffVisible(const ID& staffId, bool visible)
 {
     TRACEFUNC;

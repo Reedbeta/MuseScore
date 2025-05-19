@@ -464,6 +464,16 @@ void Staff::setReflectTranspositionInLinkedTab(bool reflect)
     m_reflectTranspositionInLinkedTab = reflect;
 }
 
+bool Staff::explodeChordsInExcerpt() const
+{
+    return m_explodeChordsInExcerpt;
+}
+
+void Staff::setExplodeChordsInExcerpt(bool explode)
+{
+    m_explodeChordsInExcerpt = explode;
+}
+
 //---------------------------------------------------------
 //   cleanupBrackets
 //---------------------------------------------------------
