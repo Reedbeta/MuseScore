@@ -243,6 +243,9 @@ public:
     bool reflectTranspositionInLinkedTab() const;
     void setReflectTranspositionInLinkedTab(bool reflect);
 
+    bool explodeChordsInExcerpt() const;
+    void setExplodeChordsInExcerpt(bool explode);
+
 #ifndef NDEBUG
     void dumpClefs(const char* title) const;
     void dumpKeys(const char* title) const;
@@ -317,6 +320,7 @@ private:
     PitchList m_pitchOffsets;               // cached value
 
     bool m_reflectTranspositionInLinkedTab = true;
+    bool m_explodeChordsInExcerpt = false;
 
     AutoOnOff m_showMeasureNumbers = AutoOnOff::AUTO;
 };
