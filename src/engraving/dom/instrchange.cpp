@@ -24,6 +24,7 @@
 
 #include "translation.h"
 
+#include "factory.h"
 #include "keysig.h"
 #include "measure.h"
 #include "mscore.h"
@@ -31,6 +32,7 @@
 #include "score.h"
 #include "segment.h"
 #include "staff.h"
+#include "stafftypechange.h"
 #include "undo.h"
 
 #include "log.h"
@@ -103,9 +105,23 @@ void InstrumentChange::setupInstrument(const Instrument* instrument)
                                : part->instrument(tickStart)->clefType(i).transposingClef;
         ClefType newClefType = concPitch ? instrument->clefType(i).concertClef
                                : instrument->clefType(i).transposingClef;
+        // Introduce staff type change if necessary
+        if (ClefInfo::staffGroup(oldClefType) != ClefInfo::staffGroup(newClefType)) {
+            StaffType* newStaffType = new StaffType(*part->staff(i)->staffType(tickStart));
+            newStaffType->setGroup(ClefInfo::staffGroup(newClefType));
+            StaffTypeChange* stc = Factory::createStaffTypeChange(findMeasureBase());
+            stc->setStaffType(newStaffType, true);
+            // If instrument change is at the start of a measure, use the measure as the element, as this will place the instrument change before the barline.
+            // TODO: using the InstrumentChange as parent will crash on undo!!!
+            EngravingItem* element = rtick().isZero() ? toEngravingItem(findMeasure()) : toEngravingItem(this);
+            stc->setParent(element);
+            stc->setTrack(part->staff(i)->idx() * VOICES);
+            score()->undoAddElement(stc);
+        }
         // Introduce cleff change only if the new clef *symbol* is different from the old one
         if (ClefInfo::symId(oldClefType) != ClefInfo::symId(newClefType)) {
             // If instrument change is at the start of a measure, use the measure as the element, as this will place the instrument change before the barline.
+            // TODO: using the InstrumentChange as parent will crash on undo!!!
             EngravingItem* element = rtick().isZero() ? toEngravingItem(findMeasure()) : toEngravingItem(this);
             score()->undoChangeClef(part->staff(i), element, newClefType, true);
         }
