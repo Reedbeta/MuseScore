@@ -1516,9 +1516,19 @@ void Score::addElement(EngravingItem* element)
 
     case ElementType::INSTRUMENT_CHANGE: {
         InstrumentChange* ic = toInstrumentChange(element);
-        ic->part()->setInstrument(ic->instrument(), ic->segment()->tick());
+        Fraction tick = ic->segment()->tick();
+        ic->part()->setInstrument(ic->instrument(), tick);
         addLayoutFlags(LayoutFlag::REBUILD_MIDI_MAPPING);
         cmdState().instrumentsChanged = true;
+        // Change staff type if needed for each staff
+        bool isDrumset = ic->instrument()->useDrumset();
+        for (Staff* staff : ic->part()->staves()) {
+            StaffType* staffType = staff->staffType(tick);
+            if (!staffType->isTabStaff() && staffType->isDrumStaff() != isDrumset) {
+                StaffType* newStaffType = staff->setStaffType(tick, *staffType);
+                newStaffType->setGroup(isDrumset ? StaffGroup::PERCUSSION : StaffGroup::STANDARD);
+            }
+        }
     }
     break;
 
