@@ -123,7 +123,7 @@ void MScoreErrorsController::checkAndShowMScoreError()
         title = muse::trc("notation", "Tuplet cannot cross barlines");
         break;
     case MsError::DEST_LOCAL_TIME_SIGNATURE:
-        title = muse::trc("notation", "Cannot paste in local time signature");
+        title = muse::trc("notation", "Cannot paste between different local time signatures");
         break;
     case MsError::DEST_TREMOLO:
         title = muse::trc("notation", "Cannot paste in tremolo");

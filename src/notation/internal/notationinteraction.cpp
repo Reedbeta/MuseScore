@@ -5166,6 +5166,8 @@ Ret NotationInteraction::repeatSelection()
 
     Ret ret = m_selection->canCopy();
     if (!ret) {
+        MScore::setError(MsError::CANNOT_REPEAT_SELECTION);
+        checkAndShowError();
         return ret;
     }
 
@@ -5182,7 +5184,11 @@ Ret NotationInteraction::repeatSelection()
             if (e) {
                 startEdit(TranslatableString("undoableAction", "Repeat selection"));
                 ChordRest* cr = toChordRest(e);
-                score()->pasteStaff(xml, cr->segment(), cr->staffIdx());
+                if (!score()->pasteStaff(xml, cr->segment(), cr->staffIdx())) {
+                    rollback();
+                    checkAndShowError();
+                    return;
+                }
                 apply();
 
                 showItem(cr);
