@@ -437,35 +437,32 @@ static EngravingItem* pasteSystemObject(EditData& srcData, EngravingItem* target
 //   cmdPaste
 //---------------------------------------------------------
 
-void Score::cmdPaste(const IMimeData* ms, MuseScoreView* view, Fraction scale)
+bool Score::cmdPaste(const IMimeData* ms, MuseScoreView* view, Fraction scale)
 {
     if (!ms) {
         LOGE() << "No MIME data given";
-        return;
+        return false;
     }
 
     if (m_selection.isNone()) {
         LOGE() << "No target selection";
         MScore::setError(MsError::NO_DEST);
-        return;
+        return false;
     }
 
     if (ms->hasFormat(mimeSymbolFormat)) {
         muse::ByteArray data = ms->data(mimeSymbolFormat);
-        cmdPasteSymbol(data, view, scale);
-        return;
+        return cmdPasteSymbol(data, view, scale);
     }
 
     if (ms->hasFormat(mimeStaffListFormat)) {
         muse::ByteArray data = ms->data(mimeStaffListFormat);
-        cmdPasteStaffList(data, scale);
-        return;
+        return cmdPasteStaffList(data, scale);
     }
 
     if (ms->hasFormat(mimeSymbolListFormat)) {
         muse::ByteArray data = ms->data(mimeSymbolListFormat);
-        cmdPasteSymbolList(data);
-        return;
+        return cmdPasteSymbolList(data);
     }
 
     if (ms->hasImage()) {
@@ -502,14 +499,15 @@ void Score::cmdPaste(const IMimeData* ms, MuseScoreView* view, Fraction scale)
         }
 
         select(droppedElements);
-        return;
+        return true;
     }
 
     LOGE() << "Unsupported MIME data (formats: " << ms->formats() << ")";
+    return false;
 }
 }
 
-void Score::cmdPasteSymbol(muse::ByteArray& data, MuseScoreView* view, Fraction scale)
+bool Score::cmdPasteSymbol(muse::ByteArray& data, MuseScoreView* view, Fraction scale)
 {
     std::vector<EngravingItem*> droppedElements;
 
@@ -518,19 +516,19 @@ void Score::cmdPasteSymbol(muse::ByteArray& data, MuseScoreView* view, Fraction 
 
     std::unique_ptr<EngravingItem> el(EngravingItem::readMimeData(this, data, &dragOffset, &duration));
     if (!el) {
-        return;
+        return false;
     }
 
     duration *= scale;
     if (!TDuration(duration).isValid()) {
-        return;
+        return false;
     }
 
     std::vector<EngravingItem*> targetElements;
     switch (m_selection.state()) {
     case SelState::NONE:
         UNREACHABLE;
-        return;
+        return false;
     case SelState::LIST:
         targetElements = m_selection.elements();
         break;
@@ -549,7 +547,7 @@ void Score::cmdPasteSymbol(muse::ByteArray& data, MuseScoreView* view, Fraction 
     if (targetElements.empty()) {
         LOGE() << "No valid target elements in selection";
         MScore::setError(MsError::NO_DEST);
-        return;
+        return false;
     }
 
     for (EngravingItem* target : targetElements) {
@@ -584,9 +582,10 @@ void Score::cmdPasteSymbol(muse::ByteArray& data, MuseScoreView* view, Fraction 
     }
 
     select(droppedElements);
+    return true;
 }
 
-void Score::cmdPasteStaffList(muse::ByteArray& data, Fraction scale)
+bool Score::cmdPasteStaffList(muse::ByteArray& data, Fraction scale)
 {
     if (MScore::debugMode) {
         LOGD() << "Pasting staff list: " << data.data();
@@ -600,7 +599,7 @@ void Score::cmdPasteStaffList(muse::ByteArray& data, Fraction scale)
         if (!e->isNote() && !e->isChordRest()) {
             LOGE() << "Cannot paste staff list onto " << e->typeName();
             MScore::setError(MsError::DEST_NO_CR);
-            return;
+            return false;
         }
         if (e->isNote()) {
             e = toNote(e)->chord();
@@ -610,12 +609,12 @@ void Score::cmdPasteStaffList(muse::ByteArray& data, Fraction scale)
 
     if (!cr) {
         MScore::setError(MsError::NO_DEST);
-        return;
+        return false;
     }
 
     if (cr->tuplet() && cr->tick() != cr->topTuplet()->tick()) {
         MScore::setError(MsError::DEST_TUPLET);
-        return;
+        return false;
     }
 
     if (!canPasteStaff(data, scale)) {
@@ -623,12 +622,10 @@ void Score::cmdPasteStaffList(muse::ByteArray& data, Fraction scale)
     }
 
     XmlReader e(data);
-    IF_ASSERT_FAILED(pasteStaff(e, cr->segment(), cr->staffIdx(), scale)) {
-        LOGE() << "Failed to paste staff";
-    }
+    return pasteStaff(e, cr->segment(), cr->staffIdx(), scale);
 }
 
-void Score::cmdPasteSymbolList(muse::ByteArray& data)
+bool Score::cmdPasteSymbolList(muse::ByteArray& data)
 {
     if (MScore::debugMode) {
         LOGD() << "Pasting element list: " << data.data();
@@ -642,7 +639,7 @@ void Score::cmdPasteSymbolList(muse::ByteArray& data)
         if (!e->isNote() && !e->isRest() && !e->isChord()) {
             LOGE() << "Cannot paste element list onto " << e->typeName();
             MScore::setError(MsError::DEST_NO_CR);
-            return;
+            return false;
         }
         if (e->isNote()) {
             e = toNote(e)->chord();
@@ -652,9 +649,10 @@ void Score::cmdPasteSymbolList(muse::ByteArray& data)
 
     if (!cr) {
         MScore::setError(MsError::NO_DEST);
-        return;
+        return false;
     }
 
     XmlReader e(data);
     pasteSymbols(e, cr);
+    return true;
 }
