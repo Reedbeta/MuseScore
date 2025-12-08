@@ -5201,7 +5201,7 @@ Ret NotationInteraction::repeatSelection()
                 if (!score()->pasteStaff(xml, cr->segment(), cr->staffIdx())) {
                     rollback();
                     checkAndShowError();
-                    return;
+                    return make_ret(Err::UnknownError);
                 }
                 apply();
 
