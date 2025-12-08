@@ -154,6 +154,14 @@ void MScoreErrorsController::checkAndShowMScoreError()
         title = muse::trc("notation", "These measures cannot be joined");
         message = muse::trc("notation", "Please remove the staff type change and retry.");
         break;
+    case MsError::CANNOT_REPEAT_SELECTION:
+        title = muse::trc("notation", "Can’t repeat this selection");
+        message = muse::trc("notation", "Make a list selection of notes or rests on the same beat or any range selection and retry.");
+        break;
+    case MsError::CANNOT_EXPLODE_IMPLODE_LOCAL_TIMESIG:
+        title = muse::trc("notation", "Can’t explode or implode");
+        message = muse::trc("notation", "Cannot explode or implode between different local time signatures");
+        break;
     }
 
     interactive()->info(title, message, {}, 0,
