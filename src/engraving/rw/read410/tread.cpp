@@ -4301,6 +4301,9 @@ void TRead::read(TimeSig* s, XmlReader& e, ReadContext& ctx)
 
     s->setSig(sig, timeSigType);
     s->setStretch(stretch);
+    if (stretch != Fraction(1, 1)) {
+        s->setLocal(true);
+    }
     s->setNumeratorString(numeratorString);
     s->setDenominatorString(denominatorString);
 }

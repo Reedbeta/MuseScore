@@ -4197,6 +4197,8 @@ void TRead::read(TimeSig* s, XmlReader& e, ReadContext& ctx)
             s->setGroups(groups);
         } else if (tag == "isCourtesy") {
             s->setIsCourtesy(e.readBool());
+        } else if (tag == "isLocal") {
+            s->setLocal(e.readBool());
         } else if (TRead::readStyledProperty(s, tag, e, ctx)) {
         } else if (!readItemProperties(s, e, ctx)) {
             e.unknown();
@@ -4209,6 +4211,9 @@ void TRead::read(TimeSig* s, XmlReader& e, ReadContext& ctx)
 
     s->setSig(sig, timeSigType);
     s->setStretch(stretch);
+    if (stretch != Fraction(1, 1)) {
+        s->setLocal(true);
+    }
     s->setNumeratorString(numeratorString);
     s->setDenominatorString(denominatorString);
 }

@@ -1443,6 +1443,7 @@ void Score::cmdAddTimeSig(Measure* fm, staff_idx_t staffIdx, TimeSig* ts, bool l
     if (local) {
         Fraction stretch = (ns / fm->timesig()).reduced();
         ts->setStretch(stretch);
+        ts->setLocal(true);
     }
 
     track_idx_t track = staffIdx * VOICES;

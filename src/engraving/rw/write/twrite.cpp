@@ -3134,6 +3134,9 @@ void TWrite::write(const TimeSig* item, XmlWriter& xml, WriteContext& ctx)
         xml.tag("stretchN", item->stretch().numerator());
         xml.tag("stretchD", item->stretch().denominator());
     }
+    if (item->isLocal()) {
+        xml.tag("isLocal", true);
+    }
     writeProperty(item, xml, Pid::NUMERATOR_STRING);
     writeProperty(item, xml, Pid::DENOMINATOR_STRING);
     if (!item->groups().empty()) {

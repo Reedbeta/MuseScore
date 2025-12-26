@@ -109,7 +109,8 @@ public:
     const Groups& groups() const { return m_groups; }
     void setGroups(const Groups& e) { m_groups = e; }
 
-    bool isLocal() const { return m_stretch != Fraction(1, 1); }
+    bool isLocal() const { return m_isLocal; }
+    void setLocal(bool isLocal) { m_isLocal = isLocal; }
 
     PointF staffOffset() const override;
 
@@ -161,5 +162,6 @@ private:
     TimeSigType m_timeSigType = TimeSigType::NORMAL;
     bool m_showCourtesySig = false;
     bool m_largeParentheses = false;
+    bool m_isLocal = false;
 };
 } // namespace mu::engraving
