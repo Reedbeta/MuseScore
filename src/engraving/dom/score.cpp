@@ -5401,7 +5401,7 @@ void Score::changeSelectedElementsVoice(voice_idx_t voice)
                 if (voice && !dstCR) {
                     score->expandVoice(s, /*m->first(SegmentType::ChordRest,*/ dstTrack);
                 }
-                score->makeGapVoice(s, dstTrack, chord->actualTicks(), s->tick());
+                score->makeGapVoice(s, dstTrack, chord->ticks(), s->tick());
             }
 
             if (!dstChord) {
