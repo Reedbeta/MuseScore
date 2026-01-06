@@ -71,13 +71,13 @@ public:
     bool hasVoiceAssignmentProperties() const override { return spanner()->hasVoiceAssignmentProperties(); }
 
     EngravingItem* findElementToSnapBefore(bool ignoreInvisible = true) const;
-    EngravingItem* findElementToSnapAfter(bool ignoreInvisible = true) const;
+    EngravingItem* findElementToSnapAfter(bool ignoreInvisible = true, bool requirePlayable = false) const;
 
     void endEditDrag(EditData& ed) override;
 
 private:
     TextBase* findStartDynamicOrExpression(bool ignoreInvisible = true) const;
-    TextBase* findEndDynamicOrExpression(bool ignoreInvisible = true) const;
+    TextBase* findEndDynamicOrExpression(bool ignoreInvisible = true, bool requirePlayable = false) const;
 
     void startEditDrag(EditData&) override;
     void editDrag(EditData&) override;
