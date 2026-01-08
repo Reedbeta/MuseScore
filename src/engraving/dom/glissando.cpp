@@ -109,7 +109,8 @@ Glissando::Glissando(EngravingItem* parent)
 {
     initElementStyle(&glissandoElementStyle);
 
-    static const std::array<Pid, 5> propertiesToInitialise {
+    constexpr std::array propertiesToInitialise {
+        Pid::GLISS_STYLE,
         Pid::GLISS_SHIFT,
         Pid::GLISS_EASEIN,
         Pid::GLISS_EASEOUT,

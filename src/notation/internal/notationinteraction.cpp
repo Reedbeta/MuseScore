@@ -61,6 +61,7 @@
 #include "engraving/dom/factory.h"
 #include "engraving/dom/figuredbass.h"
 #include "engraving/dom/fret.h"
+#include "engraving/dom/glissando.h"
 #include "engraving/dom/gradualtempochange.h"
 #include "engraving/dom/guitarbend.h"
 #include "engraving/dom/hammeronpulloff.h"
@@ -2853,6 +2854,15 @@ void NotationInteraction::applyLineNoteToNote(Score* score, Note* note1, Note* n
         dropData->dropElement = dropLine;
         if (note1->acceptDrop(*dropData)) {
             dropLine->setEndElement(note2);
+
+            if (dropLine->isGlissando()) {
+                // Need to do setIsHarpGliss before calling styleChanged, to get the right default glissando style.
+                String instrId = note1->staff()->part()->instrumentId(note1->tick());
+                if (instrId == "harp") {
+                    toGlissando(dropLine)->setIsHarpGliss(true);
+                }
+            }
+
             dropLine->styleChanged();
 
             mu::engraving::EngravingItem* el = note1->drop(*dropData);
