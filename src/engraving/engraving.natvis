@@ -13,6 +13,32 @@
   <Type Name="mu::engraving::Fraction">
     <DisplayString>{m_numerator}/{m_denominator}</DisplayString>
   </Type>
+  <Type Name="mu::engraving::PropertyValue">
+    <Intrinsic Name="data" Expression="(void*)(&amp;static_cast&lt;Arg&lt;int&gt;*&gt;(m_data._Ptr)->v)"/>
+    <Expand>
+      <Item Name="m_type">m_type,en</Item>
+      <Item Name="value" Condition="m_type == P_TYPE::BOOL">*(bool*)data()</Item>
+      <Item Name="value" Condition="m_type == P_TYPE::INT">*(int*)data()</Item>
+      <!-- Doesn't work - gives "Error: identifier "std::vector<int>" is undefined". ??? -->
+      <!--<Item Name="value" Condition="m_type == P_TYPE::INT_VEC">*(std::vector&lt;int&gt;*)data()</Item>-->
+      <Item Name="value" Condition="m_type == P_TYPE::SIZE_T">*(size_t*)data()</Item>
+      <Item Name="value" Condition="m_type == P_TYPE::REAL">*(double*)data()</Item>
+      <Item Name="value" Condition="m_type == P_TYPE::STRING">*(String*)data()</Item>
+      <Item Name="value" Condition="m_type == P_TYPE::POINT">*(PointF*)data()</Item>
+      <Item Name="value" Condition="m_type == P_TYPE::PAIR_REAL">*(PairF*)data()</Item>
+      <Item Name="value" Condition="m_type == P_TYPE::SIZE">*(SizeF*)data()</Item>
+      <Item Name="value" Condition="m_type == P_TYPE::DRAW_PATH">*(PainterPath*)data()</Item>
+      <Item Name="value" Condition="m_type == P_TYPE::SCALE">*(ScaleF*)data()</Item>
+      <Item Name="value" Condition="m_type == P_TYPE::SPATIUM">*(Spatium*)data()</Item>
+      <Item Name="value" Condition="m_type == P_TYPE::MILLIMETRE">*(Millimetre*)data()</Item>
+      <Item Name="value" Condition="m_type == P_TYPE::SYMID">*(SymId*)data()</Item>
+      <Item Name="value" Condition="m_type == P_TYPE::COLOR">*(Color*)data()</Item>
+      <Item Name="value" Condition="m_type == P_TYPE::ORNAMENT_STYLE">*(OrnamentStyle*)data(),en</Item>
+      <Item Name="value" Condition="m_type == P_TYPE::GLISS_STYLE">*(GlissandoStyle*)data(),en</Item>
+      <Item Name="value" Condition="m_type == P_TYPE::GLISS_TYPE">*(GlissandoType*)data(),en</Item>
+      <!-- TODO: More... -->
+    </Expand>
+  </Type>
   <Type Name="mu::engraving::Segment">
     <DisplayString>{{ {m_segmentType,en}, tick={m_tick}, ticks={m_ticks}, {m_children.size()} children }}</DisplayString>
     <Expand>
