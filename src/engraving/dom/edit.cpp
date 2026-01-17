@@ -2928,7 +2928,7 @@ void Score::deleteItem(EngravingItem* el)
                         undoRemoveElement(r);
                     }
 
-                    Fraction f = ticks;
+                    Fraction f = ticks * el->staff()->timeStretch(el->tick());
 
                     std::vector<TDuration> dList = toDurationList(f, true);
                     if (dList.empty()) {
@@ -2943,7 +2943,7 @@ void Score::deleteItem(EngravingItem* el)
                         rr->setTrack(track);
                         rr->setGap(true);
                         undoAddCR(rr, m, curTick);
-                        curTick += d.fraction();
+                        curTick += rr->actualTicks();
                     }
                 }
             }
